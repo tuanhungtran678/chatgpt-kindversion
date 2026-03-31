@@ -3,23 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Hiền Lành - Bản Nâng Cấp</title>
+    <title>AI Hiền Lành v2.0</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="chat-wrapper">
+    <div id="app-container">
         <header>
-            <h1>🤖 AI Hiền Lành</h1>
-            <p>Phiên bản kết nối API thực tế</p>
+            <h2>🤖 AI Hiền Lành</h2>
+            <small>Phiên bản không cần đăng nhập</small>
         </header>
-        
-        <div id="chat-box"></div>
 
-        <div class="input-group">
-            <input type="text" id="user-input" placeholder="Hỏi AI bất cứ điều gì..." autocomplete="off">
+        <div id="chat-display"></div>
+
+        <div class="input-section">
+            <input type="text" id="user-msg" placeholder="Nhập tin nhắn..." autocomplete="off">
             <button id="send-btn">Gửi</button>
         </div>
-        <button id="clear-btn">Xóa lịch sử</button>
+        <button id="clear-btn">Xóa hết hội thoại</button>
     </div>
     <script src="script.js"></script>
 </body>
