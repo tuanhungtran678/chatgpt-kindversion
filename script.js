@@ -1,24 +1,6 @@
-// --- CẤU HÌNH API ---
-const API_KEY = "DÁN_MÃ_SK_OR_V1_CỦA_BẠN_VÀO_ĐÂY";
+// Đảm bảo API_KEY không chứa ký tự lạ hoặc khoảng trắng xuống dòng
+const API_KEY = "DÁN_MÃ_CỦA_BẠN_VÀO_ĐÂY".trim(); 
 const API_URL = "https://openrouter.ai/api/v1/chat/completions";
-
-const display = document.getElementById('chat-display');
-const input = document.getElementById('user-msg');
-const sendBtn = document.getElementById('send-btn');
-
-// Tải lịch sử từ trình duyệt
-window.onload = () => {
-    const saved = JSON.parse(localStorage.getItem('my_chat_history')) || [];
-    saved.forEach(m => renderBubble(m.role, m.content));
-};
-
-function renderBubble(role, text) {
-    const div = document.createElement('div');
-    div.className = `bubble ${role}`;
-    div.innerText = text;
-    display.appendChild(div);
-    display.scrollTop = display.scrollHeight;
-}
 
 async function startChat() {
     const message = input.value.trim();
@@ -30,17 +12,18 @@ async function startChat() {
 
     const loading = document.createElement('div');
     loading.className = 'bubble ai';
-    loading.innerText = "Chờ tôi suy nghĩ chút...";
+    loading.innerText = "Đang suy nghĩ...";
     display.appendChild(loading);
 
     try {
         const response = await fetch(API_URL, {
             method: "POST",
             headers: {
+                // headers PHẢI là ký tự Latinh chuẩn (ISO-8859-1)
                 "Authorization": `Bearer ${API_KEY}`,
                 "Content-Type": "application/json",
-                "HTTP-Referer": window.location.origin, // Bắt buộc cho OpenRouter
-                "X-Title": "Local AI Chat"
+                "HTTP-Referer": "http://localhost", 
+                "X-Title": "Friendly AI Chat" // TUYỆT ĐỐI KHÔNG để tiếng Việt có dấu ở đây
             },
             body: JSON.stringify({
                 "model": "openrouter/auto", 
@@ -49,8 +32,8 @@ async function startChat() {
         });
 
         if (!response.ok) {
-            const err = await response.json();
-            throw new Error(err.error?.message || "Lỗi xác thực API");
+            const errData = await response.json();
+            throw new Error(errData.error?.message || "Lỗi máy chủ");
         }
 
         const data = await response.json();
@@ -63,18 +46,6 @@ async function startChat() {
     } catch (e) {
         loading.innerText = "❌ Lỗi: " + e.message;
         loading.style.color = "red";
+        console.error("Chi tiết lỗi:", e);
     }
 }
-
-function saveToLocal(role, content) {
-    const history = JSON.parse(localStorage.getItem('my_chat_history')) || [];
-    history.push({ role, content });
-    localStorage.setItem('my_chat_history', JSON.stringify(history));
-}
-
-sendBtn.onclick = startChat;
-input.onkeypress = (e) => { if(e.key === 'Enter') startChat(); };
-document.getElementById('clear-btn').onclick = () => {
-    localStorage.clear();
-    display.innerHTML = '';
-};
